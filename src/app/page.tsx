@@ -1,3 +1,4 @@
+import DiceCaptcha from '@/components/demos/captchas/dice';
 import GlitchyHeaderText from '@/components/demos/glitchy-header';
 import dynamic from "next/dynamic";
 
@@ -11,6 +12,7 @@ export default function Home() {
       <div className="flex flex-col items-center justify-center space-y-8">
         <ConsentDialog />
         <GlitchyHeaderText />
+        <DiceCaptcha />
       </div>
     </main>
   )
