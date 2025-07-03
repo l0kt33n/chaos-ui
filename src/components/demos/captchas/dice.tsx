@@ -6,7 +6,7 @@ import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
 import captchaLogo from '../../../assets/captcha_icon.svg'
 
-function DiceCaptcha() {
+function DiceCaptcha({ onSuccess }: { onSuccess: () => void }) {
   const [message, setMessage] = useState('');
   const [diceNumber, setDiceNumber] = useState<number | null>(null);
   const currentMonth = new Date().getMonth() + 1; // Months are 0-indexed in JavaScript
@@ -35,6 +35,7 @@ function DiceCaptcha() {
       if (diceRoll > currentMonth) {
         setIsSuccess(true);
         setMessage('Success! You rolled a number greater than the current month.');
+        onSuccess();
       } else {
         setIsSuccess(false);
         setMessage('Verification failed. You must roll a number greater than the current month.');
