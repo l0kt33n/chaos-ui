@@ -4,7 +4,13 @@ import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { twMerge } from "tailwind-merge";
 
-export default function RunawayButton({ text = "Try to Click Me" }: { text?: string }) {
+export default function RunawayButton({ 
+  text = "Try to Click Me",
+  containerRef
+}: {
+  text?: string;
+  containerRef?: React.RefObject<HTMLElement>;
+}) {
   const [position, setPosition] = useState<{ top: number; left: number } | null>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -31,12 +37,17 @@ export default function RunawayButton({ text = "Try to Click Me" }: { text?: str
     const newLeft = buttonRect.left - runawayDistance * Math.cos(angle);
     const newTop = buttonRect.top - runawayDistance * Math.sin(angle);
 
-    const safeZone = 0.05; // 5% safe zone
-    const safeZoneX = window.innerWidth * safeZone;
-    const safeZoneY = window.innerHeight * safeZone;
+    const container = containerRef?.current;
+    const containerRect = container 
+      ? container.getBoundingClientRect() 
+      : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
 
-    const boundedLeft = Math.max(safeZoneX, Math.min(window.innerWidth - safeZoneX - buttonRect.width, newLeft));
-    const boundedTop = Math.max(safeZoneY, Math.min(window.innerHeight - safeZoneY - buttonRect.height, newTop));
+    const safeZone = 0.05; // 5% safe zone
+    const safeZoneX = containerRect.width * safeZone;
+    const safeZoneY = containerRect.height * safeZone;
+
+    const boundedLeft = Math.max(containerRect.left + safeZoneX, Math.min(containerRect.left + containerRect.width - safeZoneX - buttonRect.width, newLeft));
+    const boundedTop = Math.max(containerRect.top + safeZoneY, Math.min(containerRect.top + containerRect.height - safeZoneY - buttonRect.height, newTop));
 
     setPosition({ top: boundedTop, left: boundedLeft });
   };
